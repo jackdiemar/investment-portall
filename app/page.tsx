@@ -133,29 +133,40 @@ export default function InvestmentPortal() {
               </div>
               <span className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium">{inv.status}</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div><p className="text-sm opacity-75 mb-1">Allocation</p><p className="text-2xl font-bold">{inv.allocation}</p></div>
-              <div><p className="text-sm opacity-75 mb-1">Return</p><p className="text-2xl font-bold text-green-300">{inv.return}</p></div>
-              <div><p className="text-sm opacity-75 mb-1">IRR</p><p className="text-2xl font-bold">{inv.keyMetrics.irr}</p></div>
-              <div><p className="text-sm opacity-75 mb-1">MOIC</p><p className="text-2xl font-bold">{inv.keyMetrics.moic}</p></div>
-            </div>
-          </div>
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <h3 className="text-lg font-semibold text-white mb-4">Details</h3>
-            <div className="space-y-3 text-slate-300">
-              <div className="flex justify-between"><span>Category:</span><span className="font-medium text-white">{inv.category}</span></div>
-              <div className="flex justify-between"><span>Sector:</span><span className="font-medium text-white">{inv.sector}</span></div>
-              <div className="flex justify-between"><span>Investment Date:</span><span className="font-medium text-white">{inv.investmentDate}</span></div>
-              <div className="flex justify-between"><span>Commitment:</span><span className="font-medium text-white">{inv.keyMetrics.commitment}</span></div>
-            </div>
-            <p className="text-slate-300 mt-4">{inv.description}</p>
-            <a href={inv.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 text-blue-400 hover:text-blue-300 transition-colors"><ExternalLink className="w-4 h-4" />Visit Website</a>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredInvestments.map((inv) => (
+            <button key={inv.id} onClick={() => setSelectedInvestment(inv)} className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-all hover:shadow-lg hover:shadow-blue-500/20 text-left">
+              <div className={`bg-gradient-to-br ${inv.color} p-6 flex items-center justify-center`}>
+                <div className="w-24 h-24 bg-white rounded-lg p-4 flex items-center justify-center">
+                  <img src={inv.logo} alt={inv.name} className="w-full h-full object-contain" />
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-white mb-1">{inv.name}</h3>
+                <p className="text-sm text-slate-400 mb-4">{inv.category}</p>
+                <div className="flex justify-between mb-3">
+                  <div>
+                    <p className="text-xs text-slate-400 mb-1">Allocation</p>
+                    <p className="text-lg font-bold text-white">{inv.allocation}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-slate-400 mb-1">Return</p>
+                    <p className="text-lg font-bold text-green-400">{inv.return}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-3 border-t border-slate-700">
+                  <span className="text-xs text-slate-400">{inv.sector}</span>
+                  <span className="px-2 py-1 bg-green-500/10 text-green-400 rounded text-xs font-medium">{inv.status}</span>
+                </div>
+              </div>
+            </button>
+          ))}
         </div>
+        <div className="mt-8 text-center text-slate-500 text-sm">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   if (activeTab === 'Founders') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
