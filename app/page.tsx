@@ -16,12 +16,7 @@ interface Investment {
   investmentDate: string;
   sector: string;
   description: string;
-  keyMetrics: {
-    irr: string;
-    moic: string;
-    vintage: string;
-    commitment: string;
-  };
+  keyMetrics: { irr: string; moic: string; vintage: string; commitment: string };
   website: string;
 }
 
@@ -76,11 +71,11 @@ export default function InvestmentPortal() {
     { id: 8, name: 'Garage Beer', category: 'Direct Investments', logo: '/logos/garage-beer.png', color: 'from-amber-900 to-yellow-700', allocation: '$850K', return: '+38.4%', status: 'Active', fundName: 'Equity Investment', investmentDate: 'October 2022', sector: 'Craft Beverage', description: 'Craft brewery brand.', keyMetrics: { irr: '42.1%', moic: '2.1x', vintage: '2022', commitment: '$850K' }, website: 'https://garagebeer.co' },
     { id: 9, name: 'Pavise', category: 'Direct Investments', logo: '/logos/pavise.png', color: 'from-indigo-900 to-purple-700', allocation: '$1.8M', return: '+52.3%', status: 'Active', fundName: 'Series B Preferred', investmentDate: 'July 2023', sector: 'Cybersecurity', description: 'Cybersecurity platform.', keyMetrics: { irr: '56.7%', moic: '2.8x', vintage: '2023', commitment: '$1.8M' }, website: 'https://pavise.security' },
     { id: 10, name: 'Nimble', category: 'Direct Investments', logo: '/logos/nimble.webp', color: 'from-cyan-900 to-blue-700', allocation: '$1.2M', return: '+31.5%', status: 'Active', fundName: 'Series B Preferred', investmentDate: 'April 2023', sector: 'Technology', description: 'Tech platform.', keyMetrics: { irr: '34.8%', moic: '1.9x', vintage: '2023', commitment: '$1.2M' }, website: 'https://nimble.com' },
-    { id: 11, name: 'Drywater', category: 'Direct Investments', logo: '/logos/drywater.jpeg', color: 'from-blue-900 to-cyan-700', allocation: '$950K', return: '+24.7%', status: 'Active', fundName: 'Series A Preferred', investmentDate: 'June 2023', sector: 'Consumer', description: 'Consumer products company.', keyMetrics: { irr: '27.3%', moic: '1.7x', vintage: '2023', commitment: '$950K' }, website: 'https://drywater.com' },
+    { id: 11, name: 'Drywater', category: 'Direct Investments', logo: '/logos/drywater.jpeg', color: 'from-blue-900 to-cyan-700', allocation: '$950K', return: '+24.7%', status: 'Active', fundName: 'Series A Preferred', investmentDate: 'June 2023', sector: 'Consumer', description: 'Consumer products.', keyMetrics: { irr: '27.3%', moic: '1.7x', vintage: '2023', commitment: '$950K' }, website: 'https://drywater.com' },
     { id: 12, name: 'FOS', category: 'Direct Investments', logo: '/logos/FOS.jpg', color: 'from-red-900 to-orange-700', allocation: '$1.5M', return: '+41.2%', status: 'Active', fundName: 'Series B Preferred', investmentDate: 'February 2023', sector: 'Sports Media', description: 'Sports media platform.', keyMetrics: { irr: '44.6%', moic: '2.2x', vintage: '2023', commitment: '$1.5M' }, website: 'https://frontofficesports.com' },
     { id: 13, name: 'stayHVN', category: 'Direct Investments', logo: '/logos/stayHVN.png', color: 'from-teal-900 to-green-700', allocation: '$1.1M', return: '+36.8%', status: 'Active', fundName: 'Series A Preferred', investmentDate: 'August 2023', sector: 'Hospitality Tech', description: 'Hospitality platform.', keyMetrics: { irr: '39.4%', moic: '2.0x', vintage: '2023', commitment: '$1.1M' }, website: 'https://stayhvn.com' },
     { id: 14, name: 'Losers', category: 'Direct Investments', logo: '/logos/loser.jpeg', color: 'from-purple-900 to-pink-700', allocation: '$800K', return: '+29.3%', status: 'Active', fundName: 'Equity Investment', investmentDate: 'May 2023', sector: 'Entertainment', description: 'Entertainment brand.', keyMetrics: { irr: '32.1%', moic: '1.8x', vintage: '2023', commitment: '$800K' }, website: 'https://losers.com' },
-    { id: 15, name: 'Onward', category: 'Direct Investments', logo: '/logos/onward.png', color: 'from-indigo-900 to-blue-700', allocation: '$1.3M', return: '+33.7%', status: 'Active', fundName: 'Series B Preferred', investmentDate: 'March 2023', sector: 'Technology', description: 'Digital transformation platform.', keyMetrics: { irr: '36.9%', moic: '1.9x', vintage: '2023', commitment: '$1.3M' }, website: 'https://onward.com' },
+    { id: 15, name: 'Onward', category: 'Direct Investments', logo: '/logos/onward.png', color: 'from-indigo-900 to-blue-700', allocation: '$1.3M', return: '+33.7%', status: 'Active', fundName: 'Series B Preferred', investmentDate: 'March 2023', sector: 'Technology', description: 'Digital platform.', keyMetrics: { irr: '36.9%', moic: '1.9x', vintage: '2023', commitment: '$1.3M' }, website: 'https://onward.com' },
     { id: 16, name: 'Bolt', category: 'Direct Investments', logo: '/logos/bolt.jpg', color: 'from-green-900 to-lime-700', allocation: '$2.1M', return: '+26.4%', status: 'Active', fundName: 'Series D Preferred', investmentDate: 'November 2022', sector: 'Fintech', description: 'Checkout technology.', keyMetrics: { irr: '29.2%', moic: '1.7x', vintage: '2022', commitment: '$2.1M' }, website: 'https://bolt.com' },
     { id: 17, name: 'Boyne', category: 'Direct Investments', logo: '/logos/boyne.png', color: 'from-blue-900 to-indigo-700', allocation: '$3.8M', return: '+18.9%', status: 'Active', fundName: 'Direct Equity', investmentDate: 'January 2022', sector: 'Hospitality', description: 'Resort operator.', keyMetrics: { irr: '21.4%', moic: '1.6x', vintage: '2022', commitment: '$3.8M' }, website: 'https://boyne.com' },
     { id: 18, name: 'Kawa', category: 'Direct Investments', logo: '/logos/kawa.jpeg', color: 'from-yellow-900 to-amber-700', allocation: '$680K', return: '+22.6%', status: 'Active', fundName: 'Series A Preferred', investmentDate: 'July 2023', sector: 'Consumer', description: 'Coffee brand.', keyMetrics: { irr: '25.3%', moic: '1.7x', vintage: '2023', commitment: '$680K' }, website: 'https://kawa.com' },
@@ -112,9 +107,7 @@ export default function InvestmentPortal() {
               <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <div className="relative">
                 <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter password" autoFocus />
-                <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+                <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300">{showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}</button>
               </div>
               {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
             </div>
@@ -135,9 +128,7 @@ export default function InvestmentPortal() {
           <div className={`bg-gradient-to-br ${inv.color} rounded-2xl p-8 mb-6 text-white`}>
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-white rounded-lg p-3 flex items-center justify-center">
-                  <img src={inv.logo} alt={inv.name} className="w-full h-full object-contain" />
-                </div>
+                <div className="w-20 h-20 bg-white rounded-lg p-3 flex items-center justify-center"><img src={inv.logo} alt={inv.name} className="w-full h-full object-contain" /></div>
                 <div><h1 className="text-4xl font-bold mb-2">{inv.name}</h1><p className="text-xl opacity-90">{inv.fundName}</p></div>
               </div>
               <span className="px-4 py-2 bg-white/20 rounded-full text-sm font-medium">{inv.status}</span>
@@ -174,14 +165,12 @@ export default function InvestmentPortal() {
             <button onClick={() => setIsAuthenticated(false)} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700">Logout</button>
           </div>
           <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
-            {categories.map((cat) => (<button key={cat} onClick={() => setActiveTab(cat)} className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${activeTab === cat ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700'}`}>{cat === 'all' ? 'All Investments' : cat}</button>))}
+            {categories.map((cat) => <button key={cat} onClick={() => setActiveTab(cat)} className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${activeTab === cat ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700'}`}>{cat === 'all' ? 'All Investments' : cat}</button>)}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {founders.map((founder) => (
               <div key={founder.id} className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
-                <div className="h-80 bg-gradient-to-br from-blue-900 to-indigo-900">
-                  <img src={founder.image} alt={founder.name} className="w-full h-full object-cover" />
-                </div>
+                <div className="h-80 bg-gradient-to-br from-blue-900 to-indigo-900"><img src={founder.image} alt={founder.name} className="w-full h-full object-cover" /></div>
                 <div className="p-6">
                   <h3 className="text-2xl font-bold text-white mb-1">{founder.name}</h3>
                   <p className="text-blue-400 text-sm mb-4">{founder.title}</p>
@@ -218,4 +207,31 @@ export default function InvestmentPortal() {
           </div>
         </div>
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
-          {categories.map((cat) => (<button key={cat} onClick={() => setActiveTab(cat)} className={`px-4 py-
+          {categories.map((cat) => <button key={cat} onClick={() => setActiveTab(cat)} className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${activeTab === cat ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700'}`}>{cat === 'all' ? 'All Investments' : cat}</button>)}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredInvestments.map((inv) => (
+            <button key={inv.id} onClick={() => setSelectedInvestment(inv)} className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-all hover:shadow-lg hover:shadow-blue-500/20 text-left">
+<div className={bg-gradient-to-br ${inv.color} p-6 flex items-center justify-center}>
+<div className="w-24 h-24 bg-white rounded-lg p-4 flex items-center justify-center"><img src={inv.logo} alt={inv.name} className="w-full h-full object-contain" /></div>
+</div>
+<div className="p-6">
+<h3 className="text-xl font-bold text-white mb-1">{inv.name}</h3>
+<p className="text-sm text-slate-400 mb-4">{inv.category}</p>
+<div className="flex justify-between mb-3">
+<div><p className="text-xs text-slate-400 mb-1">Allocation</p><p className="text-lg font-bold text-white">{inv.allocation}</p></div>
+<div className="text-right"><p className="text-xs text-slate-400 mb-1">Return</p><p className="text-lg font-bold text-green-400">{inv.return}</p></div>
+</div>
+<div className="flex items-center justify-between pt-3 border-t border-slate-700">
+<span className="text-xs text-slate-400">{inv.sector}</span>
+<span className="px-2 py-1 bg-green-500/10 text-green-400 rounded text-xs font-medium">{inv.status}</span>
+</div>
+</div>
+</button>
+))}
+</div>
+<div className="mt-8 text-center text-slate-500 text-sm">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+</div>
+</div>
+);
+}
