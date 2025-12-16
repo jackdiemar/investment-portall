@@ -3,12 +3,34 @@
 import React, { useState } from 'react';
 import { Lock, TrendingUp, Building2, DollarSign, BarChart3, Eye, EyeOff, ArrowLeft, ExternalLink } from 'lucide-react';
 
+interface Investment {
+  id: number;
+  name: string;
+  category: string;
+  logo: string;
+  color: string;
+  allocation: string;
+  return: string;
+  status: string;
+  fundName: string;
+  investmentDate: string;
+  sector: string;
+  description: string;
+  keyMetrics: {
+    irr: string;
+    moic: string;
+    vintage: string;
+    commitment: string;
+  };
+  website: string;
+}
+
 export default function InvestmentPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [selectedInvestment, setSelectedInvestment] = useState(null);
+  const [selectedInvestment, setSelectedInvestment] = useState<Investment | null>(null);
   const [activeTab, setActiveTab] = useState('all');
 
   const PORTAL_PASSWORD = 'invest2024';
@@ -29,7 +51,7 @@ export default function InvestmentPortal() {
     }
   };
 
-  const investments = [
+  const investments: Investment[] = [
     { id: 1, name: 'Trivest', category: 'Private Equity', logo: '🏢', color: 'from-blue-900 to-blue-700', allocation: '$3.5M', return: '+24.8%', status: 'Active', fundName: 'Trivest Fund VI', investmentDate: 'March 2022', sector: 'Middle Market PE', description: 'Private equity firm focused on control investments in middle-market companies.', keyMetrics: { irr: '27.3%', moic: '1.8x', vintage: '2022', commitment: '$5.0M' }, website: 'trivest.com' },
     { id: 2, name: 'Sosin Partners', category: 'Private Equity', logo: '💎', color: 'from-purple-900 to-indigo-700', allocation: '$2.8M', return: '+19.2%', status: 'Active', fundName: 'Sosin Growth Fund', investmentDate: 'July 2022', sector: 'Growth Equity', description: 'Growth-focused private equity firm.', keyMetrics: { irr: '21.5%', moic: '1.6x', vintage: '2022', commitment: '$4.0M' }, website: 'sosinpartners.com' },
     { id: 3, name: 'Ibex Investors', category: 'Venture Capital', logo: '🏔️', color: 'from-slate-900 to-gray-700', allocation: '$3.5M', return: '+34.6%', status: 'Active', fundName: 'Ibex Growth Fund III', investmentDate: 'January 2023', sector: 'Growth Equity', description: 'Growth equity firm investing in high-growth tech companies.', keyMetrics: { irr: '38.2%', moic: '2.1x', vintage: '2023', commitment: '$5.0M' }, website: 'ibexinvestors.com' },
