@@ -51,21 +51,44 @@ export default function InvestmentPortal() {
   const PORTAL_PASSWORD = 'invest2024';
   const ADMIN_PASSWORD = 'gator1323';
 
-  // Load investments from localStorage or use defaults
+  // Load investments from persistent storage or use defaults
   const [investments, setInvestments] = useState<Investment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('investments');
-    if (saved) {
-      setInvestments(JSON.parse(saved));
-    } else {
-      setInvestments(getDefaultInvestments());
-    }
+    loadInvestments();
   }, []);
 
-  const saveInvestments = (newInvestments: Investment[]) => {
+  const loadInvestments = async () => {
+    try {
+      // Try to load from persistent storage
+      const response = await fetch('/api/investments');
+      if (response.ok) {
+        const data = await response.json();
+        setInvestments(data.investments || getDefaultInvestments());
+      } else {
+        setInvestments(getDefaultInvestments());
+      }
+    } catch (error) {
+      console.log('Loading defaults');
+      setInvestments(getDefaultInvestments());
+    }
+    setIsLoading(false);
+  };
+
+  const saveInvestments = async (newInvestments: Investment[]) => {
     setInvestments(newInvestments);
-    localStorage.setItem('investments', JSON.stringify(newInvestments));
+    
+    // Save to server so changes persist for everyone
+    try {
+      await fetch('/api/investments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investments: newInvestments })
+      });
+    } catch (error) {
+      console.error('Failed to save:', error);
+    }
   };
 
   const calculateMetrics = (inv: Investment) => {
@@ -255,7 +278,30 @@ export default function InvestmentPortal() {
 
   // Admin Edit Modal
   const AdminEditModal = ({ investment, onClose, onSave }: { investment: Investment, onClose: () => void, onSave: (inv: Investment) => void }) => {
-    const [editData, setEditData] = useState(investment);
+    const [editData, setEditData] = useState({
+      ...investment,
+      amountCommitted: undefined as number | undefined,
+      amountCalled: undefined as number | undefined,
+      currentValue: undefined as number | undefined,
+      contactEmail: investment.contactEmail || ''
+    });
+
+    const handleAllCommitted = () => {
+      if (editData.amountCommitted) {
+        setEditData({...editData, amountCalled: editData.amountCommitted});
+      }
+    };
+
+    const handleSave = () => {
+      const finalData = {
+        ...investment,
+        amountCommitted: editData.amountCommitted || investment.amountCommitted,
+        amountCalled: editData.amountCalled || investment.amountCalled,
+        currentValue: editData.currentValue || investment.currentValue,
+        contactEmail: editData.contactEmail
+      };
+      onSave(finalData);
+    };
 
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -273,29 +319,41 @@ export default function InvestmentPortal() {
                 <label className="block text-sm font-medium text-slate-300 mb-2">Amount Committed ($)</label>
                 <input
                   type="number"
-                  value={editData.amountCommitted}
-                  onChange={(e) => setEditData({...editData, amountCommitted: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={editData.amountCommitted ?? ''}
+                  onChange={(e) => setEditData({...editData, amountCommitted: e.target.value ? parseFloat(e.target.value) : undefined})}
+                  placeholder="Enter amount"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">Amount Called ($)</label>
-                <input
-                  type="number"
-                  value={editData.amountCalled}
-                  onChange={(e) => setEditData({...editData, amountCalled: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={editData.amountCalled ?? ''}
+                    onChange={(e) => setEditData({...editData, amountCalled: e.target.value ? parseFloat(e.target.value) : undefined})}
+                    placeholder="Enter amount"
+                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={handleAllCommitted}
+                    className="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                    title="Set Amount Called = Amount Committed"
+                  >
+                    All Called
+                  </button>
+                </div>
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">Current Value ($)</label>
                 <input
                   type="number"
-                  value={editData.currentValue}
-                  onChange={(e) => setEditData({...editData, currentValue: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={editData.currentValue ?? ''}
+                  onChange={(e) => setEditData({...editData, currentValue: e.target.value ? parseFloat(e.target.value) : undefined})}
+                  placeholder="Enter value"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               
@@ -305,30 +363,37 @@ export default function InvestmentPortal() {
                   type="email"
                   value={editData.contactEmail}
                   onChange={(e) => setEditData({...editData, contactEmail: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="contact@example.com"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
             
             <div className="p-4 bg-slate-800/50 rounded-lg">
-              <h4 className="text-sm font-semibold text-slate-300 mb-3">Calculated Metrics</h4>
+              <h4 className="text-sm font-semibold text-slate-300 mb-3">Calculated Metrics (Preview)</h4>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-xs text-slate-400 mb-1">MOIC</p>
                   <p className="text-lg font-bold text-white">
-                    {(editData.currentValue / editData.amountCalled).toFixed(2)}x
+                    {editData.amountCalled && editData.currentValue 
+                      ? (editData.currentValue / editData.amountCalled).toFixed(2) + 'x'
+                      : '-'}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 mb-1">Return</p>
                   <p className="text-lg font-bold text-green-400">
-                    {(((editData.currentValue - editData.amountCalled) / editData.amountCalled) * 100).toFixed(1)}%
+                    {editData.amountCalled && editData.currentValue
+                      ? (((editData.currentValue - editData.amountCalled) / editData.amountCalled) * 100).toFixed(1) + '%'
+                      : '-'}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 mb-1">Unrealized Gain</p>
                   <p className="text-lg font-bold text-white">
-                    ${((editData.currentValue - editData.amountCalled) / 1000000).toFixed(2)}M
+                    {editData.amountCalled && editData.currentValue
+                      ? '$' + ((editData.currentValue - editData.amountCalled) / 1000000).toFixed(2) + 'M'
+                      : '-'}
                   </p>
                 </div>
               </div>
@@ -337,7 +402,7 @@ export default function InvestmentPortal() {
           
           <div className="p-6 border-t border-slate-700 flex gap-3">
             <button
-              onClick={() => onSave(editData)}
+              onClick={handleSave}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               <Save className="w-5 h-5" />
@@ -531,9 +596,9 @@ export default function InvestmentPortal() {
                   <img
                     src={founder.image}
                     alt={founder.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(founder.name)}&size=400&background=random`;
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(founder.name)}&size=800&background=random&bold=true`;
                     }}
                   />
                 </div>
