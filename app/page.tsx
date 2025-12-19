@@ -49,7 +49,7 @@ export default function InvestmentPortal() {
   const [editingInvestment, setEditingInvestment] = useState<Investment | null>(null);
   
   const PORTAL_PASSWORD = 'invest2024';
-  const ADMIN_PASSWORD = 'admin2024';
+  const ADMIN_PASSWORD = 'gator1323';
 
   // Load investments from localStorage or use defaults
   const [investments, setInvestments] = useState<Investment[]>([]);
