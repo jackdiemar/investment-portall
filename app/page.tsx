@@ -47,9 +47,18 @@ export default function InvestmentPortal() {
   const [activeTab, setActiveTab] = useState('all');
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [editingInvestment, setEditingInvestment] = useState<Investment | null>(null);
+  const [showIntro, setShowIntro] = useState(true);
   
   const PORTAL_PASSWORD = 'invest2024';
   const ADMIN_PASSWORD = 'gator1323';
+
+  // Auto-hide intro after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Load investments from persistent storage or use defaults
   const [investments, setInvestments] = useState<Investment[]>([]);
@@ -208,6 +217,133 @@ export default function InvestmentPortal() {
   const totalAllocation = investments.reduce((sum, inv) => sum + inv.currentValue, 0);
   const totalCalled = investments.reduce((sum, inv) => sum + inv.amountCalled, 0);
   const avgReturn = totalCalled > 0 ? ((totalAllocation - totalCalled) / totalCalled) * 100 : 0;
+
+  // Epic Animated Intro
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-black overflow-hidden relative flex items-center justify-center">
+        {/* Animated background grid */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e40af_1px,transparent_1px),linear-gradient(to_bottom,#1e40af_1px,transparent_1px)] bg-[size:4rem_4rem] animate-pulse"></div>
+        </div>
+        
+        {/* Radial gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.3),transparent_70%)] animate-pulse"></div>
+        
+        {/* Main content */}
+        <div className="relative z-10 text-center px-4">
+          <div className="mb-8 animate-fade-in">
+            <div className="inline-block p-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl shadow-2xl shadow-blue-500/50 animate-float">
+              <Building2 className="w-20 h-20 text-white" />
+            </div>
+          </div>
+          
+          <h1 className="text-7xl md:text-9xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent animate-slide-up tracking-tight">
+            DIEMAR
+          </h1>
+          
+          <h2 className="text-3xl md:text-5xl font-light text-blue-300 mb-8 animate-slide-up-delay tracking-widest">
+            EQUITIES
+          </h2>
+          
+          <div className="h-1 w-64 mx-auto bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-expand"></div>
+          
+          <p className="mt-8 text-slate-400 text-lg animate-fade-in-late">
+            Private Wealth Management
+          </p>
+        </div>
+        
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-blue-500/30 rounded-full animate-float-random"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${3 + Math.random() * 4}s`
+              }}
+            ></div>
+          ))}
+        </div>
+        
+        <style jsx>{`
+          @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes slide-up {
+            from { 
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to { 
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
+          
+          @keyframes expand {
+            from { 
+              width: 0;
+              opacity: 0;
+            }
+            to { 
+              width: 16rem;
+              opacity: 1;
+            }
+          }
+          
+          @keyframes float-random {
+            0%, 100% { 
+              transform: translate(0, 0);
+              opacity: 0;
+            }
+            50% { 
+              transform: translate(20px, -30px);
+              opacity: 0.6;
+            }
+          }
+          
+          .animate-fade-in {
+            animation: fade-in 1s ease-out;
+          }
+          
+          .animate-fade-in-late {
+            animation: fade-in 1s ease-out 2s both;
+          }
+          
+          .animate-slide-up {
+            animation: slide-up 0.8s ease-out 0.5s both;
+          }
+          
+          .animate-slide-up-delay {
+            animation: slide-up 0.8s ease-out 1s both;
+          }
+          
+          .animate-float {
+            animation: float 3s ease-in-out infinite;
+          }
+          
+          .animate-expand {
+            animation: expand 1.5s ease-out 1.5s both;
+          }
+          
+          .animate-float-random {
+            animation: float-random linear infinite;
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   // Login Screen
   if (!isAuthenticated) {
