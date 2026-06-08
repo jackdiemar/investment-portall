@@ -8,8 +8,8 @@ export function LogoMark({ name, logo }: { name: string; logo: string | null }) 
     .toUpperCase();
 
   return (
-    <span className="logo-mark" aria-hidden="true">
-      {logo ? <span className="logo-image" style={{ backgroundImage: `url("${logo}")` }} /> : initials}
+    <span className="logo-mark">
+      {logo ? <img className="logo-image" src={logo} alt={`${name} logo`} /> : <span aria-hidden="true">{initials}</span>}
     </span>
   );
 }

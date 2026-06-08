@@ -15,10 +15,14 @@ export type PortalSession = {
 };
 
 function getSessionSecret() {
-  const portalPassword = process.env.PORTAL_PASSWORD ?? "";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "";
+  const portalPassword = normalizePassword(process.env.PORTAL_PASSWORD ?? "");
+  const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD ?? "");
   if (!portalPassword && !adminPassword) return null;
   return `${portalPassword}:${adminPassword}`;
+}
+
+function normalizePassword(value: string) {
+  return value.trim().replace(/^["']|["']$/g, "");
 }
 
 function encodeBase64Url(value: string) {
@@ -81,12 +85,13 @@ export async function requireAdminSession() {
 }
 
 export async function createSessionFromPassword(password: string) {
-  const portalPassword = process.env.PORTAL_PASSWORD;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const enteredPassword = normalizePassword(password);
+  const portalPassword = normalizePassword(process.env.PORTAL_PASSWORD ?? "");
+  const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD ?? "");
 
   let role: SessionRole | null = null;
-  if (adminPassword && secureEquals(password, adminPassword)) role = "admin";
-  if (!role && portalPassword && secureEquals(password, portalPassword)) role = "portal";
+  if (adminPassword && secureEquals(enteredPassword, adminPassword)) role = "admin";
+  if (!role && portalPassword && secureEquals(enteredPassword, portalPassword)) role = "portal";
   if (!role) return false;
 
   const token = createToken(role);
