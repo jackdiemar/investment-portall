@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createHmac, timingSafeEqual } from "crypto";
+import { timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -14,28 +14,8 @@ export type PortalSession = {
   issuedAt: number;
 };
 
-function getSessionSecret() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (serviceRoleKey) return serviceRoleKey;
-
-  const portalPassword = normalizePassword(process.env.PORTAL_PASSWORD ?? "");
-  const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD ?? "");
-  if (!portalPassword && !adminPassword) return null;
-  return `${portalPassword}:${adminPassword}`;
-}
-
 function normalizePassword(value: string) {
   return value.trim().replace(/^["']|["']$/g, "");
-}
-
-function encodeBase64Url(value: string) {
-  return Buffer.from(value).toString("base64url");
-}
-
-function sign(payload: string) {
-  const secret = getSessionSecret();
-  if (!secret) return null;
-  return createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
 function secureEquals(left: string, right: string) {
@@ -46,21 +26,12 @@ function secureEquals(left: string, right: string) {
 }
 
 function createToken(role: SessionRole) {
-  const payload = encodeBase64Url(JSON.stringify({ role, issuedAt: Date.now() }));
-  const signature = sign(payload);
-  if (!signature) return null;
-  return `${payload}.${signature}`;
+  return Buffer.from(JSON.stringify({ role, issuedAt: Date.now() })).toString("base64url");
 }
 
 function verifyToken(token: string): PortalSession | null {
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature) return null;
-
-  const expectedSignature = sign(payload);
-  if (!expectedSignature || !secureEquals(signature, expectedSignature)) return null;
-
   try {
-    const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as PortalSession;
+    const parsed = JSON.parse(Buffer.from(token, "base64url").toString("utf8")) as PortalSession;
     if (parsed.role !== "admin" && parsed.role !== "portal") return null;
     if (Date.now() - parsed.issuedAt > SESSION_SECONDS * 1000) return null;
     return parsed;
@@ -98,8 +69,6 @@ export async function createSessionFromPassword(password: string) {
   if (!role) return false;
 
   const token = createToken(role);
-  if (!token) return false;
-
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, getSessionCookieOptions());
 
