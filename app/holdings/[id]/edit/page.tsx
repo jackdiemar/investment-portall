@@ -78,15 +78,15 @@ export default async function EditInvestmentPage({ params, searchParams }: EditI
           </label>
           <label>
             Amount committed
-            <input name="amount_committed" type="number" step="0.01" defaultValue={investment.amountCommitted} required />
+            <input name="amount_committed" inputMode="decimal" defaultValue={investment.amountCommitted} />
           </label>
           <label>
             Amount called
-            <input name="amount_called" type="number" step="0.01" defaultValue={investment.amountCalled} required />
+            <input name="amount_called" inputMode="decimal" defaultValue={investment.amountCalled} />
           </label>
           <label>
             Current value
-            <input name="current_value" type="number" step="0.01" defaultValue={investment.currentValue} required />
+            <input name="current_value" inputMode="decimal" defaultValue={investment.currentValue} />
           </label>
           <label className="full-width">
             Description

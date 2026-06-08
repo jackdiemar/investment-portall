@@ -17,9 +17,19 @@ function requiredStringValue(formData: FormData, key: string) {
 }
 
 function numberValue(formData: FormData, key: string) {
-  const raw = String(formData.get(key) ?? "").replace(/,/g, "").trim();
-  const value = Number(raw);
-  if (!Number.isFinite(value)) throw new Error(`${key} must be a number.`);
+  const raw = String(formData.get(key) ?? "").trim();
+  if (!raw) return 0;
+
+  const cleaned = raw
+    .replace(/\$/g, "")
+    .replace(/,/g, "")
+    .replace(/\s/g, "")
+    .toLowerCase();
+
+  const multiplier = cleaned.endsWith("m") ? 1_000_000 : cleaned.endsWith("k") ? 1_000 : 1;
+  const numericText = cleaned.replace(/[mk]$/, "");
+  const value = Number(numericText) * multiplier;
+  if (!Number.isFinite(value)) return 0;
   return value;
 }
 
