@@ -45,7 +45,8 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -517,7 +518,50 @@ h3 {
   padding: 10px 12px;
 }
 
+.edit-form {
+  padding: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.form-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--ink-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-grid input,
+.form-grid textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+.form-grid textarea {
+  resize: vertical;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
 .form-field input:focus,
+.form-grid input:focus,
+.form-grid textarea:focus,
 .button:focus-visible,
 .secondary-button:focus-visible,
 .nav-link:focus-visible,
@@ -571,6 +615,7 @@ h3 {
   }
 
   .upload-form,
+  .form-grid,
   .document-row,
   .memo-row,
   .category-row {

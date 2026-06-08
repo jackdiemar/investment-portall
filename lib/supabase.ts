@@ -44,6 +44,22 @@ export type Investment = {
   updatedAt: string | null;
 };
 
+export type InvestmentUpdate = {
+  name: string;
+  category: string;
+  logo: string | null;
+  fund_name: string | null;
+  sector: string | null;
+  description: string | null;
+  website: string | null;
+  contact_email: string | null;
+  investment_date: string | null;
+  amount_committed: number;
+  amount_called: number;
+  current_value: number;
+  updated_at: string;
+};
+
 export type CashFlow = {
   id: number;
   investmentId: number;
@@ -175,6 +191,23 @@ export async function fetchCashFlowsFromSupabase(investmentId: number) {
   });
   const rows = await supabaseFetch<CashFlowRow[]>(`/rest/v1/cash_flows?${params.toString()}`);
   return rows.map(mapCashFlow);
+}
+
+export async function updateInvestmentInSupabase(id: number, investment: InvestmentUpdate) {
+  const params = new URLSearchParams({
+    id: `eq.${id}`,
+    select: "*",
+  });
+  const rows = await supabaseFetch<InvestmentRow[]>(`/rest/v1/investments?${params.toString()}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(investment),
+  });
+
+  return rows[0] ? mapInvestment(rows[0]) : null;
 }
 
 export async function listStorageDocuments(bucket: "data-room" | "updates") {

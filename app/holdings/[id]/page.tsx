@@ -35,9 +35,16 @@ export default async function InvestmentDetailPage({ params }: InvestmentDetailP
           <p className="page-kicker">Investment detail</p>
           <h1>{investment.name}</h1>
         </div>
-        <Link className="secondary-button" href="/holdings">
-          Back to holdings
-        </Link>
+        <div className="header-actions">
+          {session?.role === "admin" ? (
+            <Link className="button" href={`/holdings/${investment.id}/edit`}>
+              Edit investment
+            </Link>
+          ) : null}
+          <Link className="secondary-button" href="/holdings">
+            Back to holdings
+          </Link>
+        </div>
       </div>
 
       {error ? <div className="notice">{error}</div> : null}
