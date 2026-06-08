@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 const COOKIE_NAME = "diemar_portal_session";
-const SESSION_SECONDS = 60 * 60 * 12;
+const SESSION_SECONDS = 60 * 60 * 24 * 30;
 
 export type SessionRole = "portal" | "admin";
 
@@ -15,6 +15,9 @@ export type PortalSession = {
 };
 
 function getSessionSecret() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (serviceRoleKey) return serviceRoleKey;
+
   const portalPassword = normalizePassword(process.env.PORTAL_PASSWORD ?? "");
   const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD ?? "");
   if (!portalPassword && !adminPassword) return null;
@@ -98,13 +101,7 @@ export async function createSessionFromPassword(password: string) {
   if (!token) return false;
 
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_SECONDS,
-  });
+  cookieStore.set(COOKIE_NAME, token, getSessionCookieOptions());
 
   return true;
 }
@@ -112,4 +109,14 @@ export async function createSessionFromPassword(password: string) {
 export async function clearSession() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
+}
+
+function getSessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: SESSION_SECONDS,
+  };
 }
