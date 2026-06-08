@@ -47,7 +47,7 @@ export default async function InvestmentDetailPage({ params }: InvestmentDetailP
         </div>
       </div>
 
-      {error ? <div className="notice">{error}</div> : null}
+      {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
 
       <section className="detail-hero">
         <div className="detail-title">

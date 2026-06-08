@@ -33,10 +33,12 @@ export function HoldingsTable({
   investments,
   sort,
   direction,
+  showAdminActions = false,
 }: {
   investments: Investment[];
   sort: HoldingSortKey;
   direction: SortDirection;
+  showAdminActions?: boolean;
 }) {
   const nextDirection = (key: HoldingSortKey) => (sort === key && direction === "asc" ? "desc" : "asc");
 
@@ -53,6 +55,7 @@ export function HoldingsTable({
                 </Link>
               </th>
             ))}
+            {showAdminActions ? <th className="numeric" scope="col">Edit</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -77,6 +80,13 @@ export function HoldingsTable({
                 <td className="numeric">{formatCurrency(investment.currentValue)}</td>
                 <td className="numeric">{formatMultiple(metrics.moic)}</td>
                 <td className="numeric">{formatPercent(metrics.returnPct)}</td>
+                {showAdminActions ? (
+                  <td className="numeric">
+                    <Link className="text-link" href={`/holdings/${investment.id}/edit`}>
+                      Edit
+                    </Link>
+                  </td>
+                ) : null}
               </tr>
             );
           })}

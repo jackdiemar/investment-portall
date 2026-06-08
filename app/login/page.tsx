@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createSessionFromPassword, getSession } from "@/lib/auth";
+import { createSessionFromPassword } from "@/lib/auth";
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -14,13 +14,10 @@ async function loginAction(formData: FormData) {
   const authenticated = await createSessionFromPassword(password);
 
   if (!authenticated) redirect("/login?error=invalid");
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const session = await getSession();
-  if (session) redirect("/");
-
   const params = searchParams ? await searchParams : {};
 
   return (

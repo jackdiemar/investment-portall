@@ -42,7 +42,7 @@ export async function updateInvestmentAction(id: number, formData: FormData) {
     updated_at: new Date().toISOString(),
   });
 
-  revalidatePath("/");
+  revalidatePath("/dashboard");
   revalidatePath("/holdings");
   revalidatePath(`/holdings/${id}`);
   redirect(`/holdings/${id}`);

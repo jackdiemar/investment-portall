@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import type { SessionRole } from "@/lib/auth";
 
 const navItems = [
-  { href: "/", label: "Dashboard" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/holdings", label: "Holdings" },
   { href: "/updates", label: "Updates" },
   { href: "/data-room", label: "Data room" },
@@ -22,7 +22,7 @@ export function PortalShell({ children, role }: { children: ReactNode; role: Ses
       </a>
       <header className="site-header">
         <div className="container header-inner">
-          <Link className="brand-lockup" href="/" aria-label="Diemar Equities dashboard">
+          <Link className="brand-lockup" href="/dashboard" aria-label="Diemar Equities dashboard">
             <span className="brand-mark">DE</span>
             <span>
               <span className="brand-name">Diemar Equities</span>
@@ -32,8 +32,7 @@ export function PortalShell({ children, role }: { children: ReactNode; role: Ses
 
           <nav className="primary-nav" aria-label="Primary navigation">
             {navItems.map((item) => {
-              const active =
-                item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link key={item.href} className={active ? "nav-link active" : "nav-link"} href={item.href}>
                   {item.label}

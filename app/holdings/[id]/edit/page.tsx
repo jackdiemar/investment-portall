@@ -35,7 +35,7 @@ export default async function EditInvestmentPage({ params }: EditInvestmentPageP
         </Link>
       </div>
 
-      {error ? <div className="notice">{error}</div> : null}
+      {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
 
       <form className="panel edit-form" action={action}>
         <div className="form-grid">
