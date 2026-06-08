@@ -1,7 +1,7 @@
 import { HoldingsTable, type HoldingSortKey, type SortDirection } from "@/components/HoldingsTable";
 import { PortalShell } from "@/components/PortalShell";
 import { getInvestmentMetrics, getInvestments } from "@/lib/data";
-import { requireSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 const sortKeys = new Set<HoldingSortKey>([
   "name",
@@ -23,7 +23,7 @@ type HoldingsPageProps = {
 };
 
 export default async function HoldingsPage({ searchParams }: HoldingsPageProps) {
-  const session = await requireSession();
+  const session = await getSession();
   const params = searchParams ? await searchParams : {};
   const sort = sortKeys.has(params.sort as HoldingSortKey) ? (params.sort as HoldingSortKey) : "current_value";
   const direction: SortDirection = params.direction === "asc" ? "asc" : "desc";
@@ -52,7 +52,7 @@ export default async function HoldingsPage({ searchParams }: HoldingsPageProps) 
   });
 
   return (
-    <PortalShell role={session.role}>
+    <PortalShell role={session?.role ?? "portal"}>
       <div className="page-head">
         <div>
           <p className="page-kicker">Holdings</p>

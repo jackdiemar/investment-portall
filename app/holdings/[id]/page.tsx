@@ -5,7 +5,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { PortalShell } from "@/components/PortalShell";
 import { getCashFlows, getInvestment, getInvestmentMetrics } from "@/lib/data";
 import { formatCurrency, formatDate, formatMultiple, formatPercent } from "@/lib/format";
-import { requireSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 type InvestmentDetailPageProps = {
   params: Promise<{
@@ -14,7 +14,7 @@ type InvestmentDetailPageProps = {
 };
 
 export default async function InvestmentDetailPage({ params }: InvestmentDetailPageProps) {
-  const session = await requireSession();
+  const session = await getSession();
   const { id } = await params;
   const numericId = Number(id);
   if (!Number.isFinite(numericId)) notFound();
@@ -29,7 +29,7 @@ export default async function InvestmentDetailPage({ params }: InvestmentDetailP
   const metrics = getInvestmentMetrics(investment);
 
   return (
-    <PortalShell role={session.role}>
+    <PortalShell role={session?.role ?? "portal"}>
       <div className="page-head">
         <div>
           <p className="page-kicker">Investment detail</p>
