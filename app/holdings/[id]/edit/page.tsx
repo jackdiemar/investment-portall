@@ -9,14 +9,15 @@ type EditInvestmentPageProps = {
   params: Promise<{
     id: string;
   }>;
-  searchParams?: Promise<{
-    error?: string;
-  }>;
 };
 
-export default async function EditInvestmentPage({ params, searchParams }: EditInvestmentPageProps) {
+function formatEditAmount(value: number) {
+  if (!Number.isFinite(value)) return "";
+  return Math.round(value).toLocaleString("en-US");
+}
+
+export default async function EditInvestmentPage({ params }: EditInvestmentPageProps) {
   const session = await getSession();
-  const query = searchParams ? await searchParams : {};
   const { id } = await params;
   const numericId = Number(id);
   if (!Number.isFinite(numericId)) notFound();
@@ -40,7 +41,6 @@ export default async function EditInvestmentPage({ params, searchParams }: EditI
       </div>
 
       {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
-      {query.error === "admin" ? <div className="notice">Admin password required to save changes.</div> : null}
 
       <form className="panel edit-form" action={action}>
         <div className="form-grid">
@@ -78,15 +78,15 @@ export default async function EditInvestmentPage({ params, searchParams }: EditI
           </label>
           <label>
             Amount committed
-            <input name="amount_committed" inputMode="decimal" defaultValue={investment.amountCommitted} />
+            <input name="amount_committed" inputMode="decimal" defaultValue={formatEditAmount(investment.amountCommitted)} />
           </label>
           <label>
             Amount called
-            <input name="amount_called" inputMode="decimal" defaultValue={investment.amountCalled} />
+            <input name="amount_called" inputMode="decimal" defaultValue={formatEditAmount(investment.amountCalled)} />
           </label>
           <label>
             Current value
-            <input name="current_value" inputMode="decimal" defaultValue={investment.currentValue} />
+            <input name="current_value" inputMode="decimal" defaultValue={formatEditAmount(investment.currentValue)} />
           </label>
           <label className="full-width">
             Description

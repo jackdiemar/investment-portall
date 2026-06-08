@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
 import { saveInvestmentInSupabase } from "@/lib/supabase";
 
 function stringValue(formData: FormData, key: string) {
@@ -34,9 +33,6 @@ function numberValue(formData: FormData, key: string) {
 }
 
 export async function updateInvestmentAction(id: number, formData: FormData) {
-  const session = await getSession();
-  if (session?.role !== "admin") redirect(`/holdings/${id}/edit?error=admin`);
-
   const savedInvestment = await saveInvestmentInSupabase(id, {
     name: requiredStringValue(formData, "name"),
     category: requiredStringValue(formData, "category"),
