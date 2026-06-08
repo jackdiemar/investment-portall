@@ -62,6 +62,21 @@ export function getPortfolioMetrics(investments: Investment[]): PortfolioMetrics
   };
 }
 
+function normalizeName(name: string) {
+  return name.trim().toLowerCase();
+}
+
+function mergeInvestmentsWithFallback(supabaseInvestments: Investment[]) {
+  if (!supabaseInvestments.length) return fallbackInvestments;
+
+  const supabaseByName = new Map(supabaseInvestments.map((investment) => [normalizeName(investment.name), investment]));
+  const fallbackNames = new Set(fallbackInvestments.map((investment) => normalizeName(investment.name)));
+  const merged = fallbackInvestments.map((investment) => supabaseByName.get(normalizeName(investment.name)) ?? investment);
+  const extras = supabaseInvestments.filter((investment) => !fallbackNames.has(normalizeName(investment.name)));
+
+  return [...merged, ...extras];
+}
+
 export async function getInvestments(): Promise<DataResult<Investment[]>> {
   if (!isSupabaseConfigured()) {
     return {
@@ -72,8 +87,9 @@ export async function getInvestments(): Promise<DataResult<Investment[]>> {
   }
 
   try {
+    const supabaseInvestments = await fetchInvestmentsFromSupabase();
     return {
-      data: await fetchInvestmentsFromSupabase(),
+      data: mergeInvestmentsWithFallback(supabaseInvestments),
       source: "supabase",
       error: null,
     };
@@ -96,8 +112,18 @@ export async function getInvestment(id: number): Promise<DataResult<Investment |
   }
 
   try {
+    const directInvestment = await fetchInvestmentFromSupabase(id);
+    if (directInvestment) {
+      return {
+        data: directInvestment,
+        source: "supabase",
+        error: null,
+      };
+    }
+
+    const investments = mergeInvestmentsWithFallback(await fetchInvestmentsFromSupabase());
     return {
-      data: await fetchInvestmentFromSupabase(id),
+      data: investments.find((investment) => investment.id === id) ?? null,
       source: "supabase",
       error: null,
     };

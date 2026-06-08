@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { hasAdminAccess } from "@/lib/auth";
-import { updateInvestmentInSupabase } from "@/lib/supabase";
+import { saveInvestmentInSupabase } from "@/lib/supabase";
 
 function stringValue(formData: FormData, key: string) {
   const value = String(formData.get(key) ?? "").trim();
@@ -28,7 +28,7 @@ export async function updateInvestmentAction(id: number, formData: FormData) {
   const authorized = await hasAdminAccess(adminPassword);
   if (!authorized) redirect(`/holdings/${id}/edit?error=admin`);
 
-  await updateInvestmentInSupabase(id, {
+  const savedInvestment = await saveInvestmentInSupabase(id, {
     name: requiredStringValue(formData, "name"),
     category: requiredStringValue(formData, "category"),
     logo: stringValue(formData, "logo"),
@@ -47,5 +47,6 @@ export async function updateInvestmentAction(id: number, formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/holdings");
   revalidatePath(`/holdings/${id}`);
-  redirect(`/holdings/${id}`);
+  if (savedInvestment) revalidatePath(`/holdings/${savedInvestment.id}`);
+  redirect(`/holdings/${savedInvestment?.id ?? id}`);
 }

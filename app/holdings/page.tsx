@@ -62,6 +62,7 @@ export default async function HoldingsPage({ searchParams }: HoldingsPageProps) 
       </div>
 
       {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
+      <div className="notice">Use the Edit link on any row to update values. Changes save to the Supabase investments table.</div>
       <HoldingsTable investments={sorted} sort={sort} direction={direction} />
     </PortalShell>
   );

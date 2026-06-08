@@ -192,6 +192,16 @@ export async function fetchInvestmentFromSupabase(id: number) {
   return rows[0] ? mapInvestment(rows[0]) : null;
 }
 
+export async function fetchInvestmentByNameFromSupabase(name: string) {
+  const params = new URLSearchParams({
+    select: "*",
+    name: `eq.${name}`,
+    limit: "1",
+  });
+  const rows = await supabaseFetch<InvestmentRow[]>(`/rest/v1/investments?${params.toString()}`);
+  return rows[0] ? mapInvestment(rows[0]) : null;
+}
+
 export async function fetchCashFlowsFromSupabase(investmentId: number) {
   const params = new URLSearchParams({
     select: "*",
@@ -217,6 +227,31 @@ export async function updateInvestmentInSupabase(id: number, investment: Investm
   });
 
   return rows[0] ? mapInvestment(rows[0]) : null;
+}
+
+export async function createInvestmentInSupabase(investment: InvestmentUpdate) {
+  const rows = await supabaseFetch<InvestmentRow[]>("/rest/v1/investments?select=*", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(investment),
+  });
+
+  return rows[0] ? mapInvestment(rows[0]) : null;
+}
+
+export async function saveInvestmentInSupabase(id: number, investment: InvestmentUpdate) {
+  const updatedById = await updateInvestmentInSupabase(id, investment);
+  if (updatedById) return updatedById;
+
+  const existingByName = await fetchInvestmentByNameFromSupabase(investment.name);
+  if (existingByName) {
+    return updateInvestmentInSupabase(existingByName.id, investment);
+  }
+
+  return createInvestmentInSupabase(investment);
 }
 
 export async function listStorageDocuments(bucket: "data-room" | "updates") {
