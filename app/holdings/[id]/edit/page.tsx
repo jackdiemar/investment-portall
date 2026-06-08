@@ -44,10 +44,6 @@ export default async function EditInvestmentPage({ params, searchParams }: EditI
 
       <form className="panel edit-form" action={action}>
         <div className="form-grid">
-          <label className="full-width">
-            Admin password
-            <input name="admin_password" type="password" placeholder="Required to save changes" />
-          </label>
           <label>
             Name
             <input name="name" defaultValue={investment.name} required />

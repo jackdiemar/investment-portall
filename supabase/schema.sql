@@ -24,6 +24,16 @@ create table if not exists cash_flows (
   amount numeric not null
 );
 
+create table if not exists investment_change_log (
+  id bigint primary key generated always as identity,
+  investment_id bigint,
+  investment_name text not null,
+  changed_by text not null default 'admin',
+  before_data jsonb,
+  after_data jsonb not null,
+  created_at timestamptz default now()
+);
+
 insert into storage.buckets (id, name, public)
 values ('data-room', 'data-room', false)
 on conflict (id) do nothing;

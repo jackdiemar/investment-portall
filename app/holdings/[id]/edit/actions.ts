@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { hasAdminAccess } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { saveInvestmentInSupabase } from "@/lib/supabase";
 
 function stringValue(formData: FormData, key: string) {
@@ -24,9 +24,8 @@ function numberValue(formData: FormData, key: string) {
 }
 
 export async function updateInvestmentAction(id: number, formData: FormData) {
-  const adminPassword = String(formData.get("admin_password") ?? "");
-  const authorized = await hasAdminAccess(adminPassword);
-  if (!authorized) redirect(`/holdings/${id}/edit?error=admin`);
+  const session = await getSession();
+  if (session?.role !== "admin") redirect(`/holdings/${id}/edit?error=admin`);
 
   const savedInvestment = await saveInvestmentInSupabase(id, {
     name: requiredStringValue(formData, "name"),

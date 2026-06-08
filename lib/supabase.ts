@@ -60,6 +60,14 @@ export type InvestmentUpdate = {
   updated_at: string;
 };
 
+export type InvestmentChangeLogInsert = {
+  investment_id: number;
+  investment_name: string;
+  changed_by: string;
+  before_data: Record<string, unknown> | null;
+  after_data: Record<string, unknown>;
+};
+
 export type CashFlow = {
   id: number;
   investmentId: number;
@@ -243,15 +251,60 @@ export async function createInvestmentInSupabase(investment: InvestmentUpdate) {
 }
 
 export async function saveInvestmentInSupabase(id: number, investment: InvestmentUpdate) {
+  const beforeById = await fetchInvestmentFromSupabase(id);
   const updatedById = await updateInvestmentInSupabase(id, investment);
-  if (updatedById) return updatedById;
+  if (updatedById) {
+    await logInvestmentChange({
+      investment_id: updatedById.id,
+      investment_name: updatedById.name,
+      changed_by: "admin",
+      before_data: beforeById,
+      after_data: updatedById,
+    });
+    return updatedById;
+  }
 
   const existingByName = await fetchInvestmentByNameFromSupabase(investment.name);
   if (existingByName) {
-    return updateInvestmentInSupabase(existingByName.id, investment);
+    const updatedByName = await updateInvestmentInSupabase(existingByName.id, investment);
+    if (updatedByName) {
+      await logInvestmentChange({
+        investment_id: updatedByName.id,
+        investment_name: updatedByName.name,
+        changed_by: "admin",
+        before_data: existingByName,
+        after_data: updatedByName,
+      });
+    }
+    return updatedByName;
   }
 
-  return createInvestmentInSupabase(investment);
+  const created = await createInvestmentInSupabase(investment);
+  if (created) {
+    await logInvestmentChange({
+      investment_id: created.id,
+      investment_name: created.name,
+      changed_by: "admin",
+      before_data: null,
+      after_data: created,
+    });
+  }
+  return created;
+}
+
+async function logInvestmentChange(change: InvestmentChangeLogInsert) {
+  try {
+    await supabaseFetch("/rest/v1/investment_change_log", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(change),
+    });
+  } catch (error) {
+    console.error("Investment change log failed:", error);
+  }
 }
 
 export async function listStorageDocuments(bucket: "data-room" | "updates") {
