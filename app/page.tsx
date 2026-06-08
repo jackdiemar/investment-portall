@@ -3,10 +3,10 @@ import { MetricCard } from "@/components/MetricCard";
 import { PortalShell } from "@/components/PortalShell";
 import { getInvestments, getPortfolioMetrics } from "@/lib/data";
 import { formatCurrency, formatMultiple, formatPercent } from "@/lib/format";
-import { requireSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 export default async function DashboardPage() {
-  const session = await requireSession();
+  const session = await getSession();
   const { data: investments, error } = await getInvestments();
   const metrics = getPortfolioMetrics(investments);
 
@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   ).sort((a, b) => b[1] - a[1]);
 
   return (
-    <PortalShell role={session.role}>
+    <PortalShell role={session?.role ?? "portal"}>
       <div className="page-head">
         <div>
           <p className="page-kicker">Dashboard</p>
