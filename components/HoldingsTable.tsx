@@ -33,7 +33,7 @@ export function HoldingsTable({
   investments,
   sort,
   direction,
-  showAdminActions = false,
+  showAdminActions = true,
 }: {
   investments: Investment[];
   sort: HoldingSortKey;

@@ -58,7 +58,7 @@ export default async function DashboardPage() {
                   <th className="numeric" scope="col">
                     Called
                   </th>
-                  {session?.role === "admin" ? <th className="numeric" scope="col">Edit</th> : null}
+                  <th className="numeric" scope="col">Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,13 +70,11 @@ export default async function DashboardPage() {
                     <td>{investment.category}</td>
                     <td className="numeric">{formatCurrency(investment.currentValue)}</td>
                     <td className="numeric">{formatCurrency(investment.amountCalled)}</td>
-                    {session?.role === "admin" ? (
-                      <td className="numeric">
-                        <Link className="text-link" href={`/holdings/${investment.id}/edit`}>
-                          Edit
-                        </Link>
-                      </td>
-                    ) : null}
+                    <td className="numeric">
+                      <Link className="text-link" href={`/holdings/${investment.id}/edit`}>
+                        Edit
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

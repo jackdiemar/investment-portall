@@ -2,17 +2,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateInvestmentAction } from "./actions";
 import { PortalShell } from "@/components/PortalShell";
-import { requireAdminSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getInvestment } from "@/lib/data";
 
 type EditInvestmentPageProps = {
   params: Promise<{
     id: string;
   }>;
+  searchParams?: Promise<{
+    error?: string;
+  }>;
 };
 
-export default async function EditInvestmentPage({ params }: EditInvestmentPageProps) {
-  const session = await requireAdminSession();
+export default async function EditInvestmentPage({ params, searchParams }: EditInvestmentPageProps) {
+  const session = await getSession();
+  const query = searchParams ? await searchParams : {};
   const { id } = await params;
   const numericId = Number(id);
   if (!Number.isFinite(numericId)) notFound();
@@ -23,7 +27,7 @@ export default async function EditInvestmentPage({ params }: EditInvestmentPageP
   const action = updateInvestmentAction.bind(null, investment.id);
 
   return (
-    <PortalShell role={session.role}>
+    <PortalShell role={session?.role ?? "portal"}>
       <div className="page-head">
         <div>
           <p className="page-kicker">Admin edit</p>
@@ -36,9 +40,14 @@ export default async function EditInvestmentPage({ params }: EditInvestmentPageP
       </div>
 
       {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
+      {query.error === "admin" ? <div className="notice">Admin password required to save changes.</div> : null}
 
       <form className="panel edit-form" action={action}>
         <div className="form-grid">
+          <label className="full-width">
+            Admin password
+            <input name="admin_password" type="password" placeholder="Required to save changes" />
+          </label>
           <label>
             Name
             <input name="name" defaultValue={investment.name} required />

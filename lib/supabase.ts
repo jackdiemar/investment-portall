@@ -96,9 +96,18 @@ function getConfig() {
   if (!url || !serviceRoleKey) return null;
 
   return {
-    url: url.replace(/\/$/, ""),
+    url: normalizeSupabaseUrl(url),
     serviceRoleKey,
   };
+}
+
+function normalizeSupabaseUrl(url: string) {
+  return url
+    .trim()
+    .replace(/\/$/, "")
+    .replace(/\/rest\/v1$/, "")
+    .replace(/\/storage\/v1$/, "")
+    .replace(/\/auth\/v1$/, "");
 }
 
 export function isSupabaseConfigured() {

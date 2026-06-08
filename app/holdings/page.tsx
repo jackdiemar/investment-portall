@@ -62,7 +62,7 @@ export default async function HoldingsPage({ searchParams }: HoldingsPageProps) 
       </div>
 
       {error ? <div className="notice">Showing local portfolio data until Supabase is fully connected.</div> : null}
-      <HoldingsTable investments={sorted} sort={sort} direction={direction} showAdminActions={session?.role === "admin"} />
+      <HoldingsTable investments={sorted} sort={sort} direction={direction} />
     </PortalShell>
   );
 }

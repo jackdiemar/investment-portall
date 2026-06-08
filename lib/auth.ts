@@ -58,6 +58,15 @@ export async function requireAdminSession() {
   return session;
 }
 
+export async function hasAdminAccess(password?: string) {
+  const session = await getSession();
+  if (session?.role === "admin") return true;
+
+  const enteredPassword = normalizePassword(password ?? "");
+  const adminPassword = normalizePassword(process.env.ADMIN_PASSWORD ?? "");
+  return Boolean(adminPassword && secureEquals(enteredPassword, adminPassword));
+}
+
 export async function createSessionFromPassword(password: string) {
   const enteredPassword = normalizePassword(password);
   const portalPassword = normalizePassword(process.env.PORTAL_PASSWORD ?? "");
